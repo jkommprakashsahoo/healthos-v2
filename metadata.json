@@ -1,0 +1,7 @@
+{
+  "name": "Health Memory",
+  "description": "A mobile-first health application prototype that connects scattered health records into a structured longitudinal timeline and doctor briefing assistant.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
