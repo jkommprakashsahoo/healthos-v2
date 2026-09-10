@@ -3,9 +3,10 @@ import { Wifi, Battery, Signal, Smartphone, Maximize2, Sparkles, CheckCircle2 } 
 
 interface MobileFrameProps {
   children: React.ReactNode;
+  bottomNav?: React.ReactNode;
 }
 
-export const MobileFrame: React.FC<MobileFrameProps> = ({ children }) => {
+export const MobileFrame: React.FC<MobileFrameProps> = ({ children, bottomNav }) => {
   const [currentTime, setCurrentTime] = useState('9:41');
   const [isPhoneFrame, setIsPhoneFrame] = useState(true);
   useEffect(() => {
@@ -52,7 +53,7 @@ export const MobileFrame: React.FC<MobileFrameProps> = ({ children }) => {
         className={`w-full transition-all duration-300 ${
           isPhoneFrame
             ? 'max-w-[412px] sm:h-[870px] sm:max-h-[92vh] sm:rounded-[48px] sm:border-[9px] sm:border-slate-800/90 sm:shadow-[0_25px_70px_rgba(0,0,0,0.65)] relative overflow-hidden bg-[#F7F8FA] flex flex-col'
-            : 'max-w-2xl min-h-screen bg-[#F7F8FA] sm:rounded-2xl flex flex-col shadow-xl'
+            : 'max-w-2xl min-h-screen bg-[#F7F8FA] sm:rounded-2xl flex flex-col shadow-xl relative overflow-hidden'
         }`}
       >
         {/* iOS Dynamic Island & Status Bar */}
@@ -82,6 +83,9 @@ export const MobileFrame: React.FC<MobileFrameProps> = ({ children }) => {
         <div className="flex-1 overflow-y-auto overscroll-contain relative scroll-smooth no-scrollbar">
           {children}
         </div>
+
+        {/* Bottom Navigation — sibling of the scroll container so it stays pinned */}
+        {bottomNav}
 
         {/* iOS Home Indicator Bar */}
         <div className="sticky bottom-0 left-0 right-0 h-4 bg-transparent pointer-events-none flex items-center justify-center z-50">
