@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Sparkles, Mic, ArrowRight, Calendar, Activity, Stethoscope, Pill, Building, ChevronRight, Zap, Play } from 'lucide-react';
-import { TimelineEvent } from '../types';
+import { Sparkles, Mic, ArrowRight, Calendar, Activity, Stethoscope, Pill, Building, ChevronRight, Zap, Play, CalendarPlus, MapPin } from 'lucide-react';
+import { TimelineEvent, DoctorAppointment } from '../types';
 
 interface HomeScreenProps {
   timelineEvents: TimelineEvent[];
+  nextAppointment?: DoctorAppointment;
   onOpenDoctorPrep: () => void;
   onNavigateTab: (tab: 'home' | 'timeline' | 'ask_ai' | 'records' | 'profile') => void;
   onSelectAiQuestion: (question: string, actionType?: 'what_changed' | 'previous_episodes' | 'doctor_prep' | 'summary' | 'custom') => void;
@@ -12,6 +13,7 @@ interface HomeScreenProps {
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   timelineEvents,
+  nextAppointment,
   onOpenDoctorPrep,
   onNavigateTab,
   onSelectAiQuestion,
@@ -173,40 +175,70 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       </div>
 
       {/* APPOINTMENT CARD */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#003D7A] via-[#004A94] to-[#002B57] text-white p-4.5 rounded-2xl shadow-xs border border-blue-500/30">
-        <div className="relative z-10 space-y-2.5">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center text-blue-100">
-                <Calendar className="w-4.5 h-4.5" />
+      {nextAppointment ? (
+        <div className="relative overflow-hidden bg-gradient-to-br from-[#003D7A] via-[#004A94] to-[#002B57] text-white p-4.5 rounded-2xl shadow-xs border border-blue-500/30">
+          <div className="relative z-10 space-y-2.5">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-9 h-9 rounded-xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center text-blue-100 shrink-0">
+                  <Calendar className="w-4.5 h-4.5" />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-blue-200">
+                    Doctor appointment
+                  </span>
+                  <h3 className="text-sm font-bold text-white truncate">
+                    {nextAppointment.date}
+                    {nextAppointment.time ? ` · ${nextAppointment.time}` : ''}
+                  </h3>
+                </div>
               </div>
-              <div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-blue-200">
-                  Doctor appointment
-                </span>
-                <h3 className="text-sm font-bold text-white">
-                  Tomorrow · 10:30 AM
-                </h3>
-              </div>
+              <span className="text-[10px] font-semibold bg-white/15 text-blue-100 border border-white/20 px-2 py-0.5 rounded-full shrink-0 truncate max-w-[45%]">
+                {nextAppointment.doctorName}
+              </span>
             </div>
-            <span className="text-[10px] font-semibold bg-white/15 text-blue-100 border border-white/20 px-2 py-0.5 rounded-full">
-              Dr. Sarah Jenkins
-            </span>
+
+            {nextAppointment.location && (
+              <p className="text-[11px] text-blue-100/80 flex items-center gap-1.5">
+                <MapPin className="w-3 h-3 shrink-0" />
+                <span className="truncate">{nextAppointment.location}</span>
+              </p>
+            )}
+
+            <p className="text-xs text-blue-50/90 font-normal leading-relaxed">
+              {nextAppointment.notes || 'Prepare a health briefing to review before your visit.'}
+            </p>
+
+            <button
+              id="prepare-briefing-home-btn"
+              onClick={onOpenDoctorPrep}
+              className="w-full py-2.5 px-4 bg-white hover:bg-blue-50 active:bg-blue-100 text-[#003D7A] font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-xs active:scale-[0.98]"
+            >
+              <span>Prepare briefing →</span>
+            </button>
           </div>
-
-          <p className="text-xs text-blue-50/90 font-normal leading-relaxed">
-            Your health briefing is ready with recent LDL progress, fasting blood sugar notes, and discussion questions.
-          </p>
-
+        </div>
+      ) : (
+        <div className="bg-white rounded-2xl p-4 border border-dashed border-slate-300 space-y-2.5 text-center">
+          <div className="w-9 h-9 mx-auto rounded-xl bg-[#EBF3FC] border border-[#D0E2FB] flex items-center justify-center text-[#005FB8]">
+            <CalendarPlus className="w-4.5 h-4.5" />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold text-slate-900">No upcoming doctor appointment</h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Add one from the Timeline tab and it will show up here.
+            </p>
+          </div>
           <button
-            id="prepare-briefing-home-btn"
-            onClick={onOpenDoctorPrep}
-            className="w-full py-2.5 px-4 bg-white hover:bg-blue-50 active:bg-blue-100 text-[#003D7A] font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-xs active:scale-[0.98]"
+            id="add-appointment-home-btn"
+            onClick={() => onNavigateTab('timeline')}
+            className="w-full py-2.5 px-4 bg-[#005FB8] hover:bg-[#004D99] active:scale-[0.98] text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-xs"
           >
-            <span>Prepare briefing →</span>
+            <CalendarPlus className="w-4 h-4" />
+            <span>Add doctor appointment</span>
           </button>
         </div>
-      </div>
+      )}
 
       {/* RECENT HEALTH EVENTS (Compact Timeline) */}
       <div className="space-y-3">
