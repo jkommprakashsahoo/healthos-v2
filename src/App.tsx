@@ -88,7 +88,15 @@ export function App({ patient }: AppProps) {
   };
 
   return (
-    <MobileFrame>
+    <MobileFrame
+      bottomNav={
+        <BottomNavigation
+          activeTab={activeTab}
+          onChangeTab={handleNavigateTab}
+          recordsCount={documents.length}
+        />
+      }
+    >
       {/* If Doctor Prep screen is open, display it as top-level screen */}
       {isDoctorPrepOpen ? (
         <DoctorPrepScreen
@@ -148,13 +156,6 @@ export function App({ patient }: AppProps) {
           )}
         </>
       )}
-
-      {/* Bottom Navigation Bar */}
-      <BottomNavigation
-        activeTab={activeTab}
-        onChangeTab={handleNavigateTab}
-        recordsCount={documents.length}
-      />
 
       {/* Modals and Sheets */}
       <DocumentViewerModal
